@@ -8,14 +8,20 @@ from .utilities import preprocess_text
 
 @api_view(['POST'])
 def predict(request):
-    # Load the model from the file
-    model_path = os.path.join('api','static', 'model', 'random_forest_model.pkl')
-    
-    loaded_model = joblib.load(model_path)
     # Extract the message from the request body
     message = request.data.get('message', '')
     if not message or message.strip() == "":
         return Response({'error': 'No message provided'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    model = request.data.get('model', '')
+    if not model or model not in ['lr_model','nb_model','rf_model']:
+        return Response({'error': 'Model is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Load the model from the file
+    model_path = os.path.join('api','static', 'model', model + '.pkl')
+    
+    loaded_model = joblib.load(model_path)
+    
     
     cleaned_message = preprocess_text(message)
     # Creating a DataFrame to match the input format of the model
