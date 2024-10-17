@@ -1,1 +1,1 @@
-web gunicorn smsclassification.wsgi:application --log-file -
+web gunicorn smsClassification.wsgi:application --log-file -
